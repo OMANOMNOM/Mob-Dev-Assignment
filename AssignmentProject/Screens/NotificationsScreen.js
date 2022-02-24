@@ -1,20 +1,15 @@
-import React, {useState} from "react";
-import {View, Text, TextInput, Button, StyleSheet} from "react-native"
+import React from 'react';
+import { View, Text } from 'react-native';
 
-const NotificationsScreen = (props) =>{
-    return(
-        <View>
-            <Text>Notifications Screen</Text>
-            <View style={{flexDirection:"row"}}>
-              
-            </View>
-        </View>
-    );
-}
-/*
-const style = StyleSheet.create({
-    nav: {
-        flex: 1,
-    }
-})*/
+const NotificationsScreen = () => {
+  return (
+    <View>
+      <Text>Notifications Screen</Text>
+      <View style={{
+        flexDirection: 'row' }}
+      />
+    </View>
+  );
+};
+
 export default NotificationsScreen;
