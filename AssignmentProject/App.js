@@ -15,22 +15,65 @@ import AuthContext from './AuthContext';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const isLoggedIn = async () => {
-  try {
-    let value = await AsyncStorage.getItem('id');
-    if (value === null) {
-      // value previously stored
-      console.log(value + "test")
-      return false;
-    }
-    console.log("We have a non null value")
-    return true;
-  } catch (e) {
-    // error reading value
-    console.log("we are getting erors")
-    return false;
-  }
-}
+// const isLoggedIn = async () => {
+//   try {
+//     let value = await AsyncStorage.getItem('id');
+//     if (value === null) {
+//       // value previously stored
+//       console.log(value + "test")
+//       return false;
+//     }
+//     console.log("We have a non null value")
+//     return true;
+//   } catch (e) {
+//     // error reading value
+//     console.log("we are getting erors")
+//     return false;
+//   }
+// }
+// const storeData = async (key, value) => {
+//   try {
+//     await AsyncStorage.setItem(key, value);
+//   } catch (e) {
+//     // saving error
+//   }
+// };
+
+// function ValidateCredentials(pEmail, pPassword) {
+//   return fetch(
+//     'http://localhost:3333/api/1.0.0/login',
+//     {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         email: pEmail,
+//         password: pPassword,
+//       }),
+//     },
+//   )
+//     .then((response) => response.json())
+//     .then((responseJson) => {
+//       console.log("is this code even being executed")
+//       if (responseJson.id != null) {
+//         console.log(responseJson);
+//         storeData('id', responseJson.id);
+//         storeData('token', responseJson.token);
+//         console.log(responseJson.id);
+//         console.log("This hsould be false")
+//         return true;
+//       } else {
+//         //Throw error or inform user
+//         console.log("Error signing in");
+//         return false;
+//       }
+//     })
+//     .catch((error) => {
+//       console.error(error);
+//       return null;
+//     });
+// }
 
 export default function App() {
   const [state, dispatch] = React.useReducer(
@@ -60,7 +103,7 @@ export default function App() {
       isLoading: true,
       isSignout: false,
       userToken: null,
-    }
+    },
   );
 
   React.useEffect(() => {
@@ -92,8 +135,9 @@ export default function App() {
         // We will also need to handle errors if sign in failed
         // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
         // In the example, we'll use a dummy token
-
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+          console.log("We signed in successflly we should be on the homepage rn");
+          dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
       signUp: async (data) => {
@@ -108,10 +152,10 @@ export default function App() {
     []
   );
 
-  return (    
+  return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        { state.userToken == null ? (
+        {state.userToken == null ? (
           <Stack.Navigator initialRouteName="Login">
             <>
               <Stack.Screen name="Login" component={LoginScreen} />
@@ -130,5 +174,3 @@ export default function App() {
     </AuthContext.Provider>
   );
 }
-
-// ------------- login stuff
