@@ -26,7 +26,7 @@
         "arrow-body-style":0, 
         "object-curly-newline":0,
         "import/no-extraneous-dependencies":0,
-        "no-console":0
-
+        "no-console":0,
+        "default-case":0
     }
 }

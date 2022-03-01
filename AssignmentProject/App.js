@@ -15,66 +15,6 @@ import AuthContext from './AuthContext';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// const isLoggedIn = async () => {
-//   try {
-//     let value = await AsyncStorage.getItem('id');
-//     if (value === null) {
-//       // value previously stored
-//       console.log(value + "test")
-//       return false;
-//     }
-//     console.log("We have a non null value")
-//     return true;
-//   } catch (e) {
-//     // error reading value
-//     console.log("we are getting erors")
-//     return false;
-//   }
-// }
-// const storeData = async (key, value) => {
-//   try {
-//     await AsyncStorage.setItem(key, value);
-//   } catch (e) {
-//     // saving error
-//   }
-// };
-
-// function ValidateCredentials(pEmail, pPassword) {
-//   return fetch(
-//     'http://localhost:3333/api/1.0.0/login',
-//     {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         email: pEmail,
-//         password: pPassword,
-//       }),
-//     },
-//   )
-//     .then((response) => response.json())
-//     .then((responseJson) => {
-//       console.log("is this code even being executed")
-//       if (responseJson.id != null) {
-//         console.log(responseJson);
-//         storeData('id', responseJson.id);
-//         storeData('token', responseJson.token);
-//         console.log(responseJson.id);
-//         console.log("This hsould be false")
-//         return true;
-//       } else {
-//         //Throw error or inform user
-//         console.log("Error signing in");
-//         return false;
-//       }
-//     })
-//     .catch((error) => {
-//       console.error(error);
-//       return null;
-//     });
-// }
-
 export default function App() {
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {

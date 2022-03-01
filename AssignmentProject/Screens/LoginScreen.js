@@ -3,7 +3,6 @@ import { View, Text, TextInput, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContext from '../AuthContext';
 
-let isSignedIn = false;
 const storeData = async (key, value) => {
   try {
     await AsyncStorage.setItem(key, value);
@@ -15,7 +14,7 @@ const storeData = async (key, value) => {
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSignedIn, setIsSignedIn] = useState(false)
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const { signIn } = React.useContext(AuthContext);
 
   const ValidateCredentials = (pEmail, pPassword) => {
@@ -34,28 +33,24 @@ const LoginScreen = ({ navigation }) => {
     )
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log("is this code even being executed");
         if (responseJson.id !== null) {
           console.log(responseJson);
           storeData('id', responseJson.id);
           storeData('token', responseJson.token);
-          console.log(responseJson.id);
-          console.log("This hsould be false")
-          setIsSignedIn(true)
+          setIsSignedIn(true);
         } else {
-          //Throw error or inform user
-          console.log("Error signing in");
+          console.log('Error signing in');
         }
       })
       .catch((error) => {
         console.error(error);
       });
-  }
-  
-  if (isSignedIn){
+  };
+
+  if (isSignedIn) {
     signIn({ email, password });
   }
-  
+
   return (
     <View>
       <Text>Login Screen</Text>

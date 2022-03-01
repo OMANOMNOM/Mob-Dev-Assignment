@@ -10,20 +10,19 @@ const HomeScreen = () => {
 
   const getData = async () => {
     try {
-      const value = await AsyncStorage.getItem('token')
+      const value = await AsyncStorage.getItem('token');
       if (value !== null) {
-        setToken(value)
-        console.log(token)
+        setToken(value);
+        console.log(token);
       }
     } catch (e) {
       // error reading value
     }
-  }
+  };
 
-  useEffect(() => {   
+  useEffect(() => {
     getData();
-
-      });
+  });
 
   const validateSignOut = () => {
     return fetch('http://localhost:3333/api/1.0.0/logout', {
@@ -32,24 +31,18 @@ const HomeScreen = () => {
         'Content-Type': 'application/json',
         'X-Authorization': token,
       },
-      body: "",
+      body: '',
     })
-      .then(response => {
-        if(response.ok){
-          console.log('we have succesfully logged out')
-          setIsSignedIn(false)
+      .then((response) => {
+        if (response.ok) {
+          console.log('we have succesfully logged out');
+          setIsSignedIn(false);
         }
-        //response.json()
       })
-      //.then(data => {
-      //  console.log('Success:', data);
-      //})
       .catch((error) => {
         console.error('Error:', error);
       });
   };
-
-  
 
   if (!isSignedIn) {
     signOut({});
@@ -62,13 +55,15 @@ const HomeScreen = () => {
         <Button title="Search" />
         <Button title="Home" />
         <Button title="Notifications" />
-        <Button title="logout" onPress={() => {
-          validateSignOut();
-        }} />
+        <Button
+          title="logout"
+          onPress={() => {
+            validateSignOut();
+          }
+        } />
       </View>
     </View>
   );
 };
-
 
 export default HomeScreen;
