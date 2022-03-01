@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
     )
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log("is this code even being executed")
+        console.log("is this code even being executed");
         if (responseJson.id !== null) {
           console.log(responseJson);
           storeData('id', responseJson.id);
