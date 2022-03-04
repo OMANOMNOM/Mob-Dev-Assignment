@@ -59,8 +59,8 @@ const HomeScreen = () => {
           title="logout"
           onPress={() => {
             validateSignOut();
-          }
-        } />
+          }}
+        />
       </View>
     </View>
   );

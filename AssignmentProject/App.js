@@ -3,7 +3,6 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginScreen from './Screens/LoginScreen';
 import CreateAccountScreen from './Screens/CreateAccountScreen';
 import SettingsScreen from './Screens/SettingsScreen';
@@ -70,26 +69,29 @@ export default function App() {
 
   const authContext = React.useMemo(
     () => ({
-      signIn: async (data) => {
-        // In a production app, we need to send some data (usually username, password) to server and get a token
+      signIn: async () => {
+        // signIn: async (data) => {
+        // In a production app, we need to send some data (usually username, password)
+        // to server and get a token
         // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+        // After getting token, we need to persist the token using `SecureStore` or
+        // any other encrypted storage
         // In the example, we'll use a dummy token
-          console.log("We signed in successflly we should be on the homepage rn");
-          dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
-        
+        console.log('We signed in successflly we should be on the homepage rn');
+        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
-      signUp: async (data) => {
+      // signUp: async (data) => {
+      signUp: async () => {
         // In a production app, we need to send user data to server and get a token
         // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+        // After getting token, we need to persist the token using `SecureStore` or
+        // any other encrypted storage
         // In the example, we'll use a dummy token
-
         dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
       },
     }),
-    []
+    [],
   );
 
   return (
