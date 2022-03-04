@@ -44,6 +44,24 @@ const SearchScreen = () => {
       });
   };
 
+  const addFriend = (friendUserId) => {
+    return fetch('http://localhost:3333/api/1.0.0/user/' + friendUserId +'/friends', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Friend request succesfully sent');
+        }
+      })
+      .catch((error) => {
+        console.log('Friend request already been sent');
+      });
+  };
+
   useEffect(() => {
     getData();
   });
@@ -68,7 +86,14 @@ const SearchScreen = () => {
                 {item.user_givenname}
                 {item.user_familyname}
               </Text>
-              <Button title="Add" />
+              <Button
+                title="Add"
+                onPress={() => {
+                  addFriend(item.user_id);
+                // Change text of button to pending
+                }
+              }
+              />
             </View>
           );
         }}
