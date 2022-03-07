@@ -3,30 +3,34 @@ import { View, Text, FlatList, Button } from 'react-native';
 import TestIPAddress from '../TestIPAddress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ViewFriendsScreen = ( props ) => {
+const ViewFriendsScreen = ({ route, navigation }) => {
   const [token, setToken] = useState('');
-  const [id, setID] = useState('')
+  const [id, setID] = useState('');
   const [friends, setFriends] = useState([]);
+  let user_id = null;
 
-  const getData = async () => {
+  const getDataToken = async () => {
     try {
       const value = await AsyncStorage.getItem('token');
-      const value1 = await AsyncStorage.getItem('id');
       if (value !== null) {
         setToken(value);
       }
-      if (value1 !== null) {
-        setID(value1);
+    } catch (e) {
+      // error reading value
+    }
+  };
+  const getDataID = async () => {
+    try {
+      const value = await AsyncStorage.getItem('id');
+      if (value !== null) {
+        setID(value);
       }
     } catch (e) {
       // error reading value
     }
   };
   const getFriends = () => {
-    if (props.id != null){
-      setID(props.id)
-    }
-    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/'+ '23' + '/friends', {
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/'+ id + '/friends', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -47,8 +51,19 @@ const ViewFriendsScreen = ( props ) => {
   };
 
   useEffect(() => {
-    getData();
+    if (route.params != null) {
+      user_id = route.params;
+      if (user_id != null){
+        setID(user_id.userId)
+        getDataToken();
+        console.log(user_id)
+      }
+    }else{
+    getDataToken();
+    getDataID();
+    }
   });
+  
   return (
     <View>
       <Button

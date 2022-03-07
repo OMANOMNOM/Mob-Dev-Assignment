@@ -11,6 +11,7 @@ import HomeScreen from './Screens/HomeScreen';
 import NotificationsScreen from './Screens/NotificationsScreen';
 import AuthContext from './AuthContext';
 import ViewFriendsScreen from './Screens/ViewFriendsScreen';
+import ProfileScreen from './Screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -121,6 +122,7 @@ export default function App() {
             <>
               <Stack.Screen name="homepages" component={HomePages} />
               <Stack.Screen name="viewFriendsScreen" component={ViewFriendsScreen} />
+              <Stack.Screen name="profileScreen" component={ProfileScreen} />
             </>
           </Stack.Navigator>
         )}

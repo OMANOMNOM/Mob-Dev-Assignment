@@ -62,7 +62,7 @@ const HomeScreen = ({ navigation }) => {
             title="View friends"
             onPress={() => {
               //Go to friends screen
-              navigation.navigate('viewFriendsScreen');
+              navigation.navigate('viewFriendsScreen', );
           }}/>
         </View>
       </View>

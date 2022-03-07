@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TestIPAddress from '../TestIPAddress';
 
-const SearchScreen = () => {
+const SearchScreen = ({ navigation }) => {
   const [token, setToken] = useState('');
   const [users, setUsers] = useState([]);
   const [searchField, setSearchField] = useState('');
@@ -46,7 +46,7 @@ const SearchScreen = () => {
   };
 
   const addFriend = (friendUserId) => {
-    return fetch(TestIPAddress.createAddress() +'/api/1.0.0/user/' + friendUserId +'/friends', {
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + friendUserId + '/friends', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -83,19 +83,26 @@ const SearchScreen = () => {
         renderItem={({ item }) => {
           return (
             <View style={{ flexDirection: 'row' }}>
-              <View style={{ height: 50, width: 50, backgroundColor: "aliceblue",}}>
-              </View>
+              <View style={{ height: 50, width: 50, backgroundColor: 'aliceblue' }} />
               <View>
                 <Text>
-                  {item.user_givenname + '    '+ item.user_familyname}
+                  {item.user_givenname + '    ' + item.user_familyname}
                 </Text>
+                <Button
+                  title="View"
+                  onPress={() => {
+                    console.log(item.user_id);
+                    navigation.navigate('profileScreen', {
+                      user_id: item.user_id,
+                    });
+                  }}
+                />
                 <Button
                   title="Add"
                   onPress={() => {
                     addFriend(item.user_id);
                     // Change text of button to pending
-                  }
-                  }
+                  }}
                 />
               </View>
             </View>
