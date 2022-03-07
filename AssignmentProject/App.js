@@ -10,9 +10,21 @@ import SearchScreen from './Screens/SearchScreen';
 import HomeScreen from './Screens/HomeScreen';
 import NotificationsScreen from './Screens/NotificationsScreen';
 import AuthContext from './AuthContext';
+import ViewFriendsScreen from './Screens/ViewFriendsScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+function HomePages( { navigation }) {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Notifications" component={NotificationsScreen} />
+    </Tab.Navigator>
+  );
+}
 
 export default function App() {
   const [state, dispatch] = React.useReducer(
@@ -105,12 +117,12 @@ export default function App() {
             </>
           </Stack.Navigator>
         ) : (
-          <Tab.Navigator>
-            <Tab.Screen name="Home" component={HomeScreen} />
-            <Tab.Screen name="Settings" component={SettingsScreen} />
-            <Tab.Screen name="Search" component={SearchScreen} />
-            <Tab.Screen name="Notifications" component={NotificationsScreen} />
-          </Tab.Navigator>
+          <Stack.Navigator initialRouteName="homepages">
+            <>
+              <Stack.Screen name="homepages" component={HomePages} />
+              <Stack.Screen name="viewFriendsScreen" component={ViewFriendsScreen} />
+            </>
+          </Stack.Navigator>
         )}
       </NavigationContainer>
     </AuthContext.Provider>

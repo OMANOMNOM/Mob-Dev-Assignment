@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContext from '../AuthContext';
+import TestIPAddress from '../TestIPAddress';
 
 const storeData = async (key, value) => {
   try {
@@ -19,7 +20,7 @@ const LoginScreen = ({ navigation }) => {
 
   const ValidateCredentials = (pEmail, pPassword) => {
     return fetch(
-      'http://localhost:3333/api/1.0.0/login',
+      TestIPAddress.createAddress() + "/api/1.0.0/login",
       {
         method: 'POST',
         headers: {

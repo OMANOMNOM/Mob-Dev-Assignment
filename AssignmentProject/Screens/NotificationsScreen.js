@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import TestIPAddress from '../TestIPAddress';
 
 const NotificationsScreen = () => {
   const [token, setToken] = useState('');
@@ -18,7 +19,7 @@ const NotificationsScreen = () => {
     }
   };
   const getRequests = () => {
-    return fetch('http://localhost:3333/api/1.0.0/friendrequests', {
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/friendrequests', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -37,7 +38,41 @@ const NotificationsScreen = () => {
         console.error('Error:', error);
       });
   };
+  const acceptRequest = (userId) => {
+    return fetch(TestIPAddress.createAddress() +'/api/1.0.0/friendrequests/' + userId, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('We have successfully accepted the request');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
 
+  const rejectRequest = (userId) => {
+    return fetch(TestIPAddress.createAddress() +'/api/1.0.0/friendrequests/' + userId, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('We have successfully accepted the request');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
   useEffect(() => {
     getData();
   });
@@ -48,25 +83,37 @@ const NotificationsScreen = () => {
         data={requests}
         renderItem={({ item }) => {
           return (
-            <View>
+            <View style={{ flexDirection: 'row' }}>
               <Text>
                 {item.first_name}
                 {item.last_name}
               </Text>
               <Button
                 title="Accept"
+                value={item.user_id}
                 onPress={() => {
-                // Change text of button to pending
-                }
-              }
+                  // Change text of button to pending
+                  acceptRequest(item.user_id);
+                }}
+              />
+              <Button
+                title="Reject"
+                value={item.user_id}
+                onPress={() => {
+                  // Change text of button to pending
+                  rejectRequest(item.user_id);
+                }}
               />
             </View>
           );
         }}
       />
-      <Button title="update" onPress={()=> {
-        getRequests()
-      }}></Button>
+      <Button
+        title="update"
+        onPress={()=> {
+          getRequests();
+        }}
+      />
     </View>
   );
 };

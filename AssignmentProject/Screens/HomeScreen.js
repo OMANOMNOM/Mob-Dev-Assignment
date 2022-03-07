@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContext from '../AuthContext';
-
-const HomeScreen = () => {
+import TestIPAddress from '../TestIPAddress';
+const HomeScreen = ({ navigation }) => {
   const [token, setToken] = useState('');
+  const [id, setID] = useState('');
   const [isSignedIn, setIsSignedIn] = useState(true);
   const { signOut } = React.useContext(AuthContext);
 
@@ -25,7 +26,7 @@ const HomeScreen = () => {
   });
 
   const validateSignOut = () => {
-    return fetch('http://localhost:3333/api/1.0.0/logout', {
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/logout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,11 +51,23 @@ const HomeScreen = () => {
 
   return (
     <View>
-      <Text>Home Screen</Text>
       <View style={{ flexDirection: 'row' }}>
-        <Button title="Search" />
-        <Button title="Home" />
-        <Button title="Notifications" />
+        <View>
+          <Text>Photo</Text>
+        </View>
+        <View>
+          <Text>User details</Text>
+          <Text>User details</Text>
+          <Button
+            title="View friends"
+            onPress={() => {
+              //Go to friends screen
+              navigation.navigate('viewFriendsScreen');
+          }}/>
+        </View>
+      </View>
+      <View>
+        <Text>Post</Text>
         <Button
           title="logout"
           onPress={() => {

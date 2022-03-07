@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
+import TestIPAddress from '../TestIPAddress';
 
 // TODO: Form validation
 function createAccount(pFirstName, pLastName, pEmail, pPassword, successCallback) {
   return fetch(
-    'http://localhost:3333/api/1.0.0/user',
+    TestIPAddress.createAddress() + '/api/1.0.0/user',
     {
       method: 'POST',
       headers: {

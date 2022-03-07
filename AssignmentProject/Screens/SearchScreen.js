@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import TestIPAddress from '../TestIPAddress';
 
 const SearchScreen = () => {
   const [token, setToken] = useState('');
@@ -22,9 +23,9 @@ const SearchScreen = () => {
 
   const getUsers = () => {
     const serachIn = 'all';
-    const limit = 10;
+    const limit = 20;
     const offset = 0;
-    return fetch('http://localhost:3333/api/1.0.0/search?q=' + searchField + '&search-in=' + serachIn + "&limit=" + limit, {
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/search?q=' + searchField + '&search-in=' + serachIn + "&limit=" + limit, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ const SearchScreen = () => {
   };
 
   const addFriend = (friendUserId) => {
-    return fetch('http://localhost:3333/api/1.0.0/user/' + friendUserId +'/friends', {
+    return fetch(TestIPAddress.createAddress() +'/api/1.0.0/user/' + friendUserId +'/friends', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -82,18 +83,21 @@ const SearchScreen = () => {
         renderItem={({ item }) => {
           return (
             <View style={{ flexDirection: 'row' }}>
-              <Text>
-                {item.user_givenname}
-                {item.user_familyname}
-              </Text>
-              <Button
-                title="Add"
-                onPress={() => {
-                  addFriend(item.user_id);
-                // Change text of button to pending
-                }
-              }
-              />
+              <View style={{ height: 50, width: 50, backgroundColor: "aliceblue",}}>
+              </View>
+              <View>
+                <Text>
+                  {item.user_givenname + '    '+ item.user_familyname}
+                </Text>
+                <Button
+                  title="Add"
+                  onPress={() => {
+                    addFriend(item.user_id);
+                    // Change text of button to pending
+                  }
+                  }
+                />
+              </View>
             </View>
           );
         }}
