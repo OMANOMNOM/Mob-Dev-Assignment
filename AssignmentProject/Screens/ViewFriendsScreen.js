@@ -53,17 +53,16 @@ const ViewFriendsScreen = ({ route, navigation }) => {
   useEffect(() => {
     if (route.params != null) {
       user_id = route.params;
-      if (user_id != null){
-        setID(user_id.userId)
+      if (user_id != null) {
+        setID(user_id.userId);
         getDataToken();
-        console.log(user_id)
+        console.log(user_id);
       }
-    }else{
-    getDataToken();
-    getDataID();
+    } else {
+      getDataToken();
+      getDataID();
     }
   });
-  
   return (
     <View>
       <Button
@@ -78,13 +77,11 @@ const ViewFriendsScreen = ({ route, navigation }) => {
         renderItem={({ item }) => {
           return (
             <View style={{ flexDirection: 'row' }}>
-              <View style={{ height: 50, width: 50, backgroundColor: "aliceblue", }}>
-              </View>
+              <View style={{ height: 50, width: 50, backgroundColor: "aliceblue", }}/>
               <View>
                 <Text>
                   {item.user_givenname + '    ' + item.user_familyname}
                 </Text>
-                
               </View>
             </View>
           );

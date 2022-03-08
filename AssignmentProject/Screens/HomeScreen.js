@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContext from '../AuthContext';
 import TestIPAddress from '../TestIPAddress';
+
 const HomeScreen = ({ navigation }) => {
   const [token, setToken] = useState('');
   const [id, setID] = useState('');
   const [isSignedIn, setIsSignedIn] = useState(true);
   const { signOut } = React.useContext(AuthContext);
+  const [posts, setPosts] = useState('');
 
-  const getData = async () => {
+  const getToken = async () => {
     try {
       const value = await AsyncStorage.getItem('token');
       if (value !== null) {
@@ -21,8 +23,21 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const getID = async () => {
+    try {
+      const value = await AsyncStorage.getItem('id');
+      if (value !== null) {
+        setID(value);
+        console.log(token);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
   useEffect(() => {
-    getData();
+    getToken();
+    getID();
   });
 
   const validateSignOut = () => {
@@ -38,6 +53,28 @@ const HomeScreen = ({ navigation }) => {
         if (response.ok) {
           console.log('we have succesfully logged out');
           setIsSignedIn(false);
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+
+  const getPosts = () => {
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + id + '/post', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token,
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson !== null) {
+          setPosts(responseJson);
+          console.log(responseJson);
+        } else {
+          console.log('Error signing in');
         }
       })
       .catch((error) => {
@@ -62,12 +99,43 @@ const HomeScreen = ({ navigation }) => {
             title="View friends"
             onPress={() => {
               //Go to friends screen
-              navigation.navigate('viewFriendsScreen', );
-          }}/>
+              navigation.navigate('viewFriendsScreen');
+            }} />
         </View>
       </View>
       <View>
         <Text>Post</Text>
+        <FlatList
+          data={posts}
+          renderItem={({ item }) => {
+            return (
+              <View style={{ flexDirection: 'row' }}>
+                <View style={{ height: 50, width: 50, backgroundColor: "aliceblue", }}>
+                </View>
+                <View>
+                  <Text>
+                    {item.author.first_name+ '    ' + item.author.last_name}
+                  </Text>
+                </View>
+                <Text> {item.text} </Text>
+              </View>
+            );
+          }}
+
+        />
+        <Button
+          title="getPosts"
+          onPress={() => {
+            getPosts();
+          }}
+        />
+        <Button
+          title="makePost"
+          onPress={() => {
+            navigation.navigate('New Post');
+          }}
+        />
+
         <Button
           title="logout"
           onPress={() => {

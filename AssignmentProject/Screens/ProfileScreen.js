@@ -3,9 +3,46 @@ import { View, Text, FlatList, Button } from 'react-native';
 import TestIPAddress from '../TestIPAddress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ProfileScreen = ({route, navigation}) => {
+const ProfileScreen = ({ route, navigation }) => {
   const [token, setToken] = useState('');
   const { user_id } = route.params;
+  const [posts, setPosts] = useState('');
+
+  const getToken = async () => {
+    try {
+      const value = await AsyncStorage.getItem('token');
+      if (value !== null) {
+        setToken(value);
+        console.log(token);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+  const getPosts = () => {
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + user_id + '/post', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token,
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson !== null) {
+          setPosts(responseJson);
+          console.log(responseJson);
+        } else {
+          console.log('Error signing in');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+  useEffect(() => {
+    getToken();
+  });
 
   return (
     <View>
@@ -25,10 +62,41 @@ const ProfileScreen = ({route, navigation}) => {
               });
             }}
           />
+          <Button
+            title="get Posts"
+            onPress={() => {
+              // Go to friends screen
+              getPosts();
+            }}
+          />
+          <Button
+            title="makePost"
+            onPress={() => {
+              navigation.navigate('New Post', {
+                userId: user_id
+              });
+            }}
+          />
         </View>
       </View>
       <View>
         <Text>Post</Text>
+        <FlatList
+          data={posts}
+          renderItem={({ item }) => {
+            return (
+              <View style={{ flexDirection: 'row' }}>
+                <View style={{ height: 50, width: 50, backgroundColor: 'aliceblue' }} />
+                <View>
+                  <Text>
+                    {item.author.first_name + '    ' + item.author.last_name}
+                  </Text>
+                </View>
+                <Text> {item.text} </Text>
+              </View>
+            );
+          }}
+        />
       </View>
     </View>
   );
