@@ -132,7 +132,6 @@ const HomeScreen = ({ navigation }) => {
               </View>
             );
           }}
-
         />
         <Button
           title="getPosts"
@@ -146,7 +145,6 @@ const HomeScreen = ({ navigation }) => {
             navigation.navigate('New Post');
           }}
         />
-
         <Button
           title="logout"
           onPress={() => {

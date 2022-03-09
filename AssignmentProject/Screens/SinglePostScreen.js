@@ -8,6 +8,8 @@ const SinglePostScreen = ({ route, navigation }) => {
   const [userid, setUserID] = useState('');
   const [postId, setPostId] = useState('');
   const [postText, setText] = useState('');
+  const [postLikes, setPostLikes] = useState('');
+  const [isPostOwner, setIsPostOwner] = useState(false);
 
   const getToken = async () => {
     try {
@@ -33,12 +35,50 @@ const SinglePostScreen = ({ route, navigation }) => {
       .then((response) => response.json())
       .then((responseJson) => {
         if (responseJson !== null) {
-          console.log(responseJson);
-          console.log(responseJson.text);
-          console.log("Above is our text")
+          if (responseJson.author.user_id == userid) {
+            setIsPostOwner(true);
+          }
+          setPostLikes(responseJson.numLikes);
           setText(responseJson.text);
         } else {
           console.log('Error signing in');
+        }
+      })
+      .catch((error) => {
+        console.log('Friend request already been sent');
+      });
+  };
+
+  const likePost = () => {
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + userid + '/post/' + postId + '/like', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('we have succesfully like this post');
+        }
+      })
+      .catch((error) => {
+        console.log('Friend request already been sent');
+      });
+  };
+
+  const deletePost = () => {
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + userid + '/post/' + postId, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('we have succesfully deleted out');
+          navigation.goBack();
         }
       })
       .catch((error) => {
@@ -61,11 +101,20 @@ const SinglePostScreen = ({ route, navigation }) => {
         <Text>{postText}</Text>
       </View>
       <Button
-        title="Like"
+        title="get"
         onPress={() => {
           getPost();
         }}
       />
+      <Button
+        title="Like"
+        onPress={() => {
+          likePost();
+        }}
+      />
+      <Text> {postLikes}</Text>
+      {isPostOwner && <Button title="delete" onPress={() => { deletePost(); }} />}
+
     </View>
   );
 };
