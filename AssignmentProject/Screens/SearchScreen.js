@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TestIPAddress from '../TestIPAddress';
+import { Card } from 'react-native-elements';
 
 const SearchScreen = ({ navigation }) => {
   const [token, setToken] = useState('');
@@ -69,7 +70,6 @@ const SearchScreen = ({ navigation }) => {
 
   return (
     <View>
-      <Text>Search Screen</Text>
       <TextInput placeholder="Search..." onChangeText={(text) => setSearchField(text)} />
       <Button
         title="Search"
@@ -82,30 +82,32 @@ const SearchScreen = ({ navigation }) => {
         data={users}
         renderItem={({ item }) => {
           return (
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ height: 50, width: 50, backgroundColor: 'aliceblue' }} />
-              <View>
-                <Text>
-                  {item.user_givenname + '    ' + item.user_familyname}
-                </Text>
-                <Button
-                  title="View"
-                  onPress={() => {
-                    console.log(item.user_id);
-                    navigation.navigate('profileScreen', {
-                      user_id: item.user_id,
-                    });
-                  }}
-                />
-                <Button
-                  title="Add"
-                  onPress={() => {
-                    addFriend(item.user_id);
-                    // Change text of button to pending
-                  }}
-                />
+            <Card>
+              <View style={{ flexDirection: 'row' }}>
+                <View style={{ height: 50, width: 50, backgroundColor: 'aliceblue' }} />
+                <View>
+                  <Text>
+                    {item.user_givenname + '    ' + item.user_familyname}
+                  </Text>
+                  <Button
+                    title="View"
+                    onPress={() => {
+                      console.log(item.user_id);
+                      navigation.navigate('profileScreen', {
+                        user_id: item.user_id,
+                      });
+                    }}
+                  />
+                  <Button
+                    title="Add"
+                    onPress={() => {
+                      addFriend(item.user_id);
+                      // Change text of button to pending
+                    }}
+                  />
+                </View>
               </View>
-            </View>
+            </Card>
           );
         }}
       />

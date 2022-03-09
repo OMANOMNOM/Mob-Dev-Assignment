@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Card, Button } from 'react-native-elements';
 import AuthContext from '../AuthContext';
 import TestIPAddress from '../TestIPAddress';
 
@@ -54,21 +55,24 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View>
-      <Text>Login Screen</Text>
-      <TextInput placeholder="Email" onChangeText={(text) => setEmail(text)} />
-      <TextInput placeholder="Password" onChangeText={(text) => setPassword(text)} />
-      <Button
-        title="Sign in"
-        onPress={() => {
-          ValidateCredentials(email, password);
-        }}
-      />
+      <Card>
+        <TextInput placeholder="Email" onChangeText={(text) => setEmail(text)} />
+        <TextInput placeholder="Password" onChangeText={(text) => setPassword(text)} />
+        <Button
+          title="Sign in"
+          onPress={() => {
+            ValidateCredentials(email, password);
+          }}
+        />
+      </Card>
+      <Card>
       <Button
         title="Create Account"
         onPress={() => {
           navigation.navigate('CreateAccount');
         }}
       />
+      </Card>
     </View>
   );
 };

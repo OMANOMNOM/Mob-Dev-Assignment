@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button } from 'react-native';
 import TestIPAddress from '../TestIPAddress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Card} from 'react-native-elements';
 
 const ViewFriendsScreen = ({ route, navigation }) => {
   const [token, setToken] = useState('');
@@ -76,14 +77,16 @@ const ViewFriendsScreen = ({ route, navigation }) => {
         data={friends}
         renderItem={({ item }) => {
           return (
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ height: 50, width: 50, backgroundColor: "aliceblue", }}/>
-              <View>
-                <Text>
-                  {item.user_givenname + '    ' + item.user_familyname}
-                </Text>
+            <Card>
+              <View style={{ flexDirection: 'row' }}>
+                <View style={{ height: 50, width: 50, backgroundColor: "aliceblue", }}/>
+                <View>
+                  <Text>
+                    {item.user_givenname + '    ' + item.user_familyname}
+                  </Text>
+                </View>
               </View>
-            </View>
+            </Card>
           );
         }}
       />

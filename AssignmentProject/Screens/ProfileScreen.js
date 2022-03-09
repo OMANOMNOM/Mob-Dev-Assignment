@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button } from 'react-native';
 import TestIPAddress from '../TestIPAddress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Card } from 'react-native-elements';
 const ProfileScreen = ({ route, navigation }) => {
   const [token, setToken] = useState('');
   const { user_id } = route.params;
@@ -46,64 +46,68 @@ const ProfileScreen = ({ route, navigation }) => {
 
   return (
     <View>
-      <View style={{ flexDirection: 'row' }}>
-        <View>
-          <Text>Photo</Text>
+      <Card>
+        <View style={{ flexDirection: 'row' }}>
+          <View>
+            <Text>Photo</Text>
+          </View>
+          <View>
+            <Text>User details</Text>
+            <Text>User details</Text>
+            <Button
+              title="View friends"
+              onPress={() => {
+                // Go to friends screen
+                navigation.navigate('viewFriendsScreen', {
+                  userId: user_id
+                });
+              }}
+            />
+          </View>
         </View>
-        <View>
-          <Text>User details</Text>
-          <Text>User details</Text>
-          <Button
-            title="View friends"
-            onPress={() => {
-              // Go to friends screen
-              navigation.navigate('viewFriendsScreen', {
-                userId: user_id
-              });
-            }}
-          />
-          <Button
-            title="get Posts"
-            onPress={() => {
-              // Go to friends screen
-              getPosts();
-            }}
-          />
-          <Button
-            title="makePost"
-            onPress={() => {
-              navigation.navigate('New Post', {
-                userId: user_id
-              });
-            }}
-          />
-        </View>
-      </View>
+      </Card>
       <View>
         <Text>Post</Text>
         <FlatList
           data={posts}
           renderItem={({ item }) => {
             return (
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ height: 50, width: 50, backgroundColor: 'aliceblue' }} />
-                <View>
-                  <Text>
-                    {item.author.first_name + '    ' + item.author.last_name}
-                  </Text>
+              <Card>
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={{ height: 50, width: 50, backgroundColor: 'aliceblue' }} />
+                  <View>
+                    <Text>
+                      {item.author.first_name + '    ' + item.author.last_name}
+                    </Text>
+                  </View>
+                  <Text> {item.text} </Text>
+                  <Button
+                    title="View Post"
+                    onPress={() => {
+                      navigation.navigate('Single Post', {
+                        userId: user_id,
+                        postId: item.post_id,
+                      });
+                    }}
+                  />
                 </View>
-                <Text> {item.text} </Text>
-                <Button
-                  title="View Post"
-                  onPress={() => {
-                    navigation.navigate('Single Post', {
-                      userId: user_id,
-                      postId: item.post_id,
-                    });
-                  }}
-                />
-              </View>
+              </Card>
             );
+          }}
+        />
+        <Button
+          title="get Posts"
+          onPress={() => {
+            // Go to friends screen
+            getPosts();
+          }}
+        />
+        <Button
+          title="makePost"
+          onPress={() => {
+            navigation.navigate('New Post', {
+              userId: user_id
+            });
           }}
         />
       </View>
