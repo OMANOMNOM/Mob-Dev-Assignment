@@ -60,12 +60,11 @@ const NewPostScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     getToken();
-    if (route.params != null)
-    {
+    if (route.params != null) {
       console.log(route.params.userId);
       setID(route.params.userId);
-    }else{
-    getID();
+    } else {
+      getID();
     }
   });
 

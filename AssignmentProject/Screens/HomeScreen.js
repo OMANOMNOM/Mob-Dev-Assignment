@@ -109,15 +109,26 @@ const HomeScreen = ({ navigation }) => {
           data={posts}
           renderItem={({ item }) => {
             return (
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ height: 50, width: 50, backgroundColor: "aliceblue", }}>
-                </View>
-                <View>
-                  <Text>
-                    {item.author.first_name+ '    ' + item.author.last_name}
-                  </Text>
+              <View>
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={{ height: 50, width: 50, backgroundColor: "aliceblue", }} />
+                  <View>
+                    <Text>
+                      {item.author.first_name+ '    ' + item.author.last_name}
+                      {item.timestamp}
+                    </Text>
+                  </View>
                 </View>
                 <Text> {item.text} </Text>
+                <Button
+                  title="View Post"
+                  onPress={() => {
+                    navigation.navigate('Single Post', {
+                      userId: id,
+                      postId: item.post_id,
+                    });
+                  }}
+                />
               </View>
             );
           }}

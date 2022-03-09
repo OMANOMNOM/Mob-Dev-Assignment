@@ -93,6 +93,15 @@ const ProfileScreen = ({ route, navigation }) => {
                   </Text>
                 </View>
                 <Text> {item.text} </Text>
+                <Button
+                  title="View Post"
+                  onPress={() => {
+                    navigation.navigate('Single Post', {
+                      userId: user_id,
+                      postId: item.post_id,
+                    });
+                  }}
+                />
               </View>
             );
           }}

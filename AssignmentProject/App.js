@@ -13,6 +13,7 @@ import AuthContext from './AuthContext';
 import ViewFriendsScreen from './Screens/ViewFriendsScreen';
 import ProfileScreen from './Screens/ProfileScreen';
 import NewPostScreen from './Screens/NewPostScreen';
+import SinglePostScreen from './Screens/SinglePostScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -120,10 +121,11 @@ export default function App() {
         ) : (
           <Stack.Navigator initialRouteName="homepages">
             <>
-              <Stack.Screen name="homepages" component={HomePages} />
+              <Stack.Screen name="homepages" component={HomePages} options={{ headerShown: false }}/>
               <Stack.Screen name="viewFriendsScreen" component={ViewFriendsScreen} />
               <Stack.Screen name="profileScreen" component={ProfileScreen} />
               <Stack.Screen name="New Post" component={NewPostScreen} />
+              <Stack.Screen name="Single Post" component={SinglePostScreen} />
             </>
           </Stack.Navigator>
         )}
