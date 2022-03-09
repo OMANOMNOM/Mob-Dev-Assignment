@@ -9,6 +9,7 @@ const HomeScreen = ({ navigation }) => {
   const [token, setToken] = useState('');
   const [id, setID] = useState('');
   const [isSignedIn, setIsSignedIn] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
   const { signOut } = React.useContext(AuthContext);
   const [posts, setPosts] = useState('');
 
@@ -17,7 +18,7 @@ const HomeScreen = ({ navigation }) => {
       const value = await AsyncStorage.getItem('token');
       if (value !== null) {
         setToken(value);
-        console.log(token);
+        return true;
       }
     } catch (e) {
       // error reading value
@@ -29,17 +30,12 @@ const HomeScreen = ({ navigation }) => {
       const value = await AsyncStorage.getItem('id');
       if (value !== null) {
         setID(value);
-        console.log(token);
+        return true;
       }
     } catch (e) {
       // error reading value
     }
   };
-
-  useEffect(() => {
-    getToken();
-    getID();
-  });
 
   const validateSignOut = () => {
     return fetch(TestIPAddress.createAddress() + '/api/1.0.0/logout', {
@@ -73,7 +69,6 @@ const HomeScreen = ({ navigation }) => {
       .then((responseJson) => {
         if (responseJson !== null) {
           setPosts(responseJson);
-          console.log(responseJson);
         } else {
           console.log('Error signing in');
         }
@@ -86,6 +81,23 @@ const HomeScreen = ({ navigation }) => {
   if (!isSignedIn) {
     signOut({});
   }
+  const updatePosts = async () => {
+    try {
+      if (await getToken() === true && await getID() === true) {
+        getPosts();
+        setIsLoaded(true);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  // TOOD SHOULD ONLY BE CALLED ONCE
+  useEffect(() => {
+    if (isLoaded === false) {
+      updatePosts();
+    }
+  });
 
   return (
     <View>
@@ -136,12 +148,6 @@ const HomeScreen = ({ navigation }) => {
                 </View>
               </Card>
             );
-          }}
-        />
-        <Button
-          title="getPosts"
-          onPress={() => {
-            getPosts();
           }}
         />
         <Button

@@ -7,13 +7,14 @@ const ProfileScreen = ({ route, navigation }) => {
   const [token, setToken] = useState('');
   const { user_id } = route.params;
   const [posts, setPosts] = useState('');
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const getToken = async () => {
     try {
       const value = await AsyncStorage.getItem('token');
       if (value !== null) {
         setToken(value);
-        console.log(token);
+        return true;
       }
     } catch (e) {
       // error reading value
@@ -40,8 +41,23 @@ const ProfileScreen = ({ route, navigation }) => {
         console.error('Error:', error);
       });
   };
+
+  const updatePosts = async () => {
+    try {
+      if (await getToken() === true) {
+        getPosts();
+        setIsLoaded(true);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  // TOOD SHOULD ONLY BE CALLED ONCE
   useEffect(() => {
-    getToken();
+    if (isLoaded === false) {
+      updatePosts();
+    }
   });
 
   return (
@@ -93,13 +109,6 @@ const ProfileScreen = ({ route, navigation }) => {
                 </View>
               </Card>
             );
-          }}
-        />
-        <Button
-          title="get Posts"
-          onPress={() => {
-            // Go to friends screen
-            getPosts();
           }}
         />
         <Button
