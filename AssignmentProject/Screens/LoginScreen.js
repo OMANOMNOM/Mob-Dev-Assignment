@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card, Button } from 'react-native-elements';
 import AuthContext from '../AuthContext';
@@ -9,7 +9,7 @@ const storeData = async (key, value) => {
   try {
     await AsyncStorage.setItem(key, value);
   } catch (e) {
-    // saving error
+    console.error(e);
   }
 };
 
@@ -21,7 +21,7 @@ const LoginScreen = ({ navigation }) => {
 
   const ValidateCredentials = (pEmail, pPassword) => {
     return fetch(
-      TestIPAddress.createAddress() + "/api/1.0.0/login",
+      `${TestIPAddress.createAddress()}/api/1.0.0/login`,
       {
         method: 'POST',
         headers: {
@@ -33,15 +33,23 @@ const LoginScreen = ({ navigation }) => {
         }),
       },
     )
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        if (response.status === 400) {
+          throw 'Incorrect username or password';
+        } else {
+          throw 'Something went wrong :(';
+        }
+      })
       .then((responseJson) => {
         if (responseJson.id !== null) {
-          console.log(responseJson);
-          storeData('id', responseJson.id);
+          storeData('id', responseJson.id.toString());
           storeData('token', responseJson.token);
           setIsSignedIn(true);
         } else {
-          console.log('Error signing in');
+          throw 'Unexpected data returned';
         }
       })
       .catch((error) => {
@@ -66,12 +74,12 @@ const LoginScreen = ({ navigation }) => {
         />
       </Card>
       <Card>
-      <Button
-        title="Create Account"
-        onPress={() => {
-          navigation.navigate('CreateAccount');
-        }}
-      />
+        <Button
+          title="Create Account"
+          onPress={() => {
+            navigation.navigate('CreateAccount');
+          }}
+        />
       </Card>
     </View>
   );

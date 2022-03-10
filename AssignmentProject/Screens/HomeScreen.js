@@ -9,16 +9,16 @@ const HomeScreen = ({ navigation }) => {
   const [token, setToken] = useState('');
   const [id, setID] = useState('');
   const [isSignedIn, setIsSignedIn] = useState(true);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoadeding, setIsLoadeding] = useState(false);
   const { signOut } = React.useContext(AuthContext);
-  const [posts, setPosts] = useState('');
+  const [posts, setPosts] = useState(null);
 
   const getToken = async () => {
     try {
       const value = await AsyncStorage.getItem('token');
       if (value !== null) {
         setToken(value);
-        return true;
+        return value; // return here becasue of the sync of bug
       }
     } catch (e) {
       // error reading value
@@ -30,7 +30,7 @@ const HomeScreen = ({ navigation }) => {
       const value = await AsyncStorage.getItem('id');
       if (value !== null) {
         setID(value);
-        return true;
+        return value; // return here becasue of the sync of bug
       }
     } catch (e) {
       // error reading value
@@ -38,7 +38,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const validateSignOut = () => {
-    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/logout', {
+    return fetch(`${TestIPAddress.createAddress()}/api/1.0.0/logout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,34 +47,51 @@ const HomeScreen = ({ navigation }) => {
       body: '',
     })
       .then((response) => {
-        if (response.ok) {
-          console.log('we have succesfully logged out');
+        if (response.status === 200) {
           setIsSignedIn(false);
+        } else if (response.status === 401) {
+          throw 'Unauthorised';
+        } else if (response.status === 500) {
+          throw 'Server Error';
         }
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error(error);
       });
   };
 
-  const getPosts = () => {
-    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + id + '/post', {
+  const getPosts = (ptoken, pid) => {
+    return fetch(`${TestIPAddress.createAddress()}/api/1.0.0/user/${pid}/post`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'X-Authorization': token,
+        'X-Authorization': ptoken,
       },
-    })
-      .then((response) => response.json())
+    },
+    )
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        if (response.status === 401) {
+          throw 'unauthorised';
+        } else if (response.status === 403) {
+          throw 'Can only view the posts of yourself or your friends';
+        } else if (response.status === 404) {
+          throw 'Not found';
+        } else if (response.status === 500) {
+          throw 'server error';
+        }
+      })
       .then((responseJson) => {
         if (responseJson !== null) {
           setPosts(responseJson);
         } else {
-          console.log('Error signing in');
+          throw 'Unexpected Json returned';
         }
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error(error);
       });
   };
 
@@ -83,19 +100,22 @@ const HomeScreen = ({ navigation }) => {
   }
   const updatePosts = async () => {
     try {
-      if (await getToken() === true && await getID() === true) {
-        getPosts();
-        setIsLoaded(true);
+      const tempToken = await getToken();
+      const tempId = await getID(); // I don't use states here becuase of a werid sync issue
+      if (tempToken != null && tempId != null) {
+        getPosts(tempToken, tempId);
+        setIsLoadeding(true);
       }
     } catch (e) {
-      // error reading value
+      console.error(e);
     }
   };
 
   // TOOD SHOULD ONLY BE CALLED ONCE
   useEffect(() => {
-    if (isLoaded === false) {
+    if (posts === null && isLoadeding === false) {
       updatePosts();
+      setIsLoadeding(true);
     }
   });
 
@@ -112,9 +132,10 @@ const HomeScreen = ({ navigation }) => {
             <Button
               title="View friends"
               onPress={() => {
-                //Go to friends screen
+                // Go to friends screen
                 navigation.navigate('viewFriendsScreen');
-              }} />
+              }}
+            />
           </View>
         </View>
       </Card>
@@ -127,15 +148,17 @@ const HomeScreen = ({ navigation }) => {
               <Card>
                 <View>
                   <View style={{ flexDirection: 'row' }}>
-                    <View style={{ height: 50, width: 50, backgroundColor: "aliceblue", }} />
+                    <View style={{ height: 50, width: 50, backgroundColor: 'aliceblue' }} />
                     <View>
                       <Text>
-                        {item.author.first_name+ '    ' + item.author.last_name}
+                        {item.author.first_name + '    ' + item.author.last_name}
                         {item.timestamp}
                       </Text>
                     </View>
                   </View>
-                  <Text> {item.text} </Text>
+                  <Text>
+                    {item.text}
+                  </Text>
                   <Button
                     title="View Post"
                     onPress={() => {

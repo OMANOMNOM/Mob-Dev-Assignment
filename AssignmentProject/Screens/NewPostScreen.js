@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, TextInput } from 'react-native';
-import TestIPAddress from '../TestIPAddress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import TestIPAddress from '../TestIPAddress';
 
 const NewPostScreen = ({ route, navigation }) => {
   const [token, setToken] = useState('');

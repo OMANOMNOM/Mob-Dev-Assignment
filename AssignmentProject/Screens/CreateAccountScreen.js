@@ -2,39 +2,45 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import TestIPAddress from '../TestIPAddress';
 
-// TODO: Form validation
-function createAccount(pFirstName, pLastName, pEmail, pPassword, successCallback) {
-  return fetch(
-    TestIPAddress.createAddress() + '/api/1.0.0/user',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        first_name: pFirstName,
-        last_name: pLastName,
-        email: pEmail,
-        password: pPassword,
-      }),
-    },
-  )
-    .then((response) => {
-      if (response.ok) {
-        successCallback(true);
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
-
 const CreateAccountScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // TODO: Form validation
+  const createAccount = (pFirstName, pLastName, pEmail, pPassword, successCallback) => {
+    // TODO: form validation
+
+    return fetch(
+      `${TestIPAddress.createAddress()}/api/1.0.0/user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name: pFirstName,
+          last_name: pLastName,
+          email: pEmail,
+          password: pPassword,
+        }),
+      },
+    )
+      .then((response) => {
+        if (response.status === 201) {
+          successCallback(true);
+        } else if (response.status === 400) {
+          throw 'Validation failed';
+        } else if (response.status === 500) {
+          throw 'internal server error';
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <View>

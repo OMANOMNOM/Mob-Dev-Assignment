@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import TestIPAddress from '../TestIPAddress';
 import { Card } from 'react-native-elements';
+import TestIPAddress from '../TestIPAddress';
 
 const SearchScreen = ({ navigation }) => {
   const [token, setToken] = useState('');
@@ -26,19 +26,30 @@ const SearchScreen = ({ navigation }) => {
     const serachIn = 'all';
     const limit = 20;
     const offset = 0;
-    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/search?q=' + searchField + '&search-in=' + serachIn + "&limit=" + limit, {
+    return fetch(`${TestIPAddress.createAddress()}/api/1.0.0/search?q=${searchField}&search-in=${serachIn}&limit=${limit}&offset=${offset}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'X-Authorization': token,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        if (response.status === 400) {
+          throw 'bad request';
+        } else if (response.status === 401) {
+          throw 'Unauthorised';
+        } else {
+          throw 'Server error';
+        }
+      })
       .then((responseJson) => {
         if (responseJson !== null) {
           setUsers(responseJson);
         } else {
-          console.log('Error signing in');
+          throw 'Unexpected Json';
         }
       })
       .catch((error) => {
@@ -47,7 +58,7 @@ const SearchScreen = ({ navigation }) => {
   };
 
   const addFriend = (friendUserId) => {
-    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + friendUserId + '/friends', {
+    return fetch(`${TestIPAddress.createAddress()}/api/1.0.0/user/${friendUserId}/friends`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -55,12 +66,20 @@ const SearchScreen = ({ navigation }) => {
       },
     })
       .then((response) => {
-        if (response.ok) {
-          console.log('Friend request succesfully sent');
+        if (response.status === 200) {
+          // Do something
+        } else if (response.status === 401) {
+          throw 'Unauthorised';
+        } else if (response.status === 403) {
+          throw 'user is already added as a friend';
+        } else if (response.status === 404) {
+          throw 'Not found';
+        } else if (response.status === 500) {
+          throw 'server error';
         }
       })
       .catch((error) => {
-        console.log('Friend request already been sent');
+        console.error(error);
       });
   };
 
