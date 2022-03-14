@@ -14,7 +14,7 @@ import ViewFriendsScreen from './Screens/ViewFriendsScreen';
 import ProfileScreen from './Screens/ProfileScreen';
 import NewPostScreen from './Screens/NewPostScreen';
 import SinglePostScreen from './Screens/SinglePostScreen';
-
+import PhotoScreen from './Screens/PhotoScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -24,6 +24,7 @@ function HomePages( { navigation }) {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Notifications" component={NotificationsScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
@@ -126,6 +127,7 @@ export default function App() {
               <Stack.Screen name="profileScreen" component={ProfileScreen} />
               <Stack.Screen name="New Post" component={NewPostScreen} />
               <Stack.Screen name="Single Post" component={SinglePostScreen} />
+              <Stack.Screen name="PhotoScreen" component={PhotoScreen} />
             </>
           </Stack.Navigator>
         )}

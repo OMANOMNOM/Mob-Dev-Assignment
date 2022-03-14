@@ -123,8 +123,9 @@ const HomeScreen = ({ navigation }) => {
     <View>
       <Card>
         <View style={{ flexDirection: 'row' }}>
-          <View>
+          <View style={{ flexDirection: 'column' }}>
             <Text>Photo</Text>
+            <Button title="Change profile picture" onPress={() => { navigation.navigate('PhotoScreen'); }} />
           </View>
           <View>
             <Text>User details</Text>

@@ -1,11 +1,18 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-
+import { View, TextInput } from 'react-native';
+import { Card, Button } from 'react-native-elements';
+ 
 const SettingsScreen = () => {
   return (
     <View>
-      <Text>Settings Screen</Text>
-      <View style={{ flexDirection: 'row' }} />
+      <Card>
+        <TextInput placeholder='FirstName'/>
+        <TextInput placeholder='SurName'/>
+        <TextInput placeholder='Email'/>
+        <TextInput placeholder='Change password'/>
+
+        <Button title="Save Changes" />
+      </Card>
     </View>
   );
 };
