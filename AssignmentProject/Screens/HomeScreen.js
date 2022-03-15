@@ -38,29 +38,6 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const validateSignOut = () => {
-    return fetch(`${TestIPAddress.createAddress()}/api/1.0.0/logout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Authorization': token,
-      },
-      body: '',
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          setIsSignedIn(false);
-        } else if (response.status === 401) {
-          throw 'Unauthorised';
-        } else if (response.status === 500) {
-          throw 'Server Error';
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   const getProfileImage = async () => {
     let tid = null;
     let ttoken = null;
@@ -222,12 +199,6 @@ const HomeScreen = ({ navigation }) => {
           title="makePost"
           onPress={() => {
             navigation.navigate('New Post');
-          }}
-        />
-        <Button
-          title="logout"
-          onPress={() => {
-            validateSignOut();
           }}
         />
       </View>
