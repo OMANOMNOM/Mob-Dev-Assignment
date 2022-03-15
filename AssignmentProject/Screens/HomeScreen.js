@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList } from 'react-native';
+import { View, Text, Button, FlatList, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-elements';
 import AuthContext from '../AuthContext';
 import TestIPAddress from '../TestIPAddress';
 
 const HomeScreen = ({ navigation }) => {
-  const [token, setToken] = useState('');
-  const [id, setID] = useState('');
+  const [token, setToken] = useState(null);
+  const [id, setID] = useState(null);
   const [isSignedIn, setIsSignedIn] = useState(true);
-  const [isLoadeding, setIsLoadeding] = useState(false);
+  const [isLoadedingPosts, setIsLoadedingPosts] = useState(false);
+  const [isloadingPhotos, setIsLoadingPhotos] = useState(false);
   const { signOut } = React.useContext(AuthContext);
   const [posts, setPosts] = useState(null);
-
+  const [photo, setPhoto] = useState(null);
   const getToken = async () => {
     try {
       const value = await AsyncStorage.getItem('token');
@@ -60,7 +61,40 @@ const HomeScreen = ({ navigation }) => {
       });
   };
 
+  const getProfileImage = async () => {
+    let tid = null;
+    let ttoken = null;
+    if( token === null){
+      ttoken = await getToken();
+    }else{
+      ttoken = token
+    }
+    if (id === null){
+      tid = await getID();
+    }else{
+      tid = id;
+    }
+
+    fetch(`${TestIPAddress.createAddress()}/api/1.0.0/user/${tid}/photo`, {
+      method: 'GET',
+      headers: {
+        'X-Authorization': ttoken,
+      }
+    })
+      .then((res) => {
+        return res.blob();
+      })
+      .then((resBlob) => {
+        let data = URL.createObjectURL(resBlob);
+        setPhoto(data);
+      })
+      .catch((err) => {
+        console.log("error", err)
+      });
+  }
+
   const getPosts = (ptoken, pid) => {
+    
     return fetch(`${TestIPAddress.createAddress()}/api/1.0.0/user/${pid}/post`, {
       method: 'GET',
       headers: {
@@ -104,28 +138,39 @@ const HomeScreen = ({ navigation }) => {
       const tempId = await getID(); // I don't use states here becuase of a werid sync issue
       if (tempToken != null && tempId != null) {
         getPosts(tempToken, tempId);
-        setIsLoadeding(true);
+        setIsLoadedingPosts(true);
+        getProfileImage();
       }
     } catch (e) {
       console.error(e);
     }
   };
 
-  // TOOD SHOULD ONLY BE CALLED ONCE
+  // Needs an empty array param to limit it too a single call 
   useEffect(() => {
-    if (posts === null && isLoadeding === false) {
+    if (posts === null && isLoadedingPosts === false) {
+      setIsLoadedingPosts(true);
       updatePosts();
-      setIsLoadeding(true);
+
     }
-    console.log(id)
-  });
+    console.log("This should be called once and only once")
+  }, []);
 
   return (
     <View>
       <Card>
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flexDirection: 'column' }}>
-            <Text>Photo</Text>
+            <Image
+              source={{
+                uri: photo,
+              }}
+              style={{
+                width: 400,
+                height: 400,
+                borderWidth: 5
+              }}
+            />
             <Button title="Change profile picture" onPress={() => { navigation.navigate('PhotoScreen'); }} />
           </View>
           <View>
@@ -143,6 +188,7 @@ const HomeScreen = ({ navigation }) => {
       </Card>
       <View>
         <Text>Post</Text>
+        {posts && (
         <FlatList
           data={posts}
           renderItem={({ item }) => {
@@ -152,10 +198,6 @@ const HomeScreen = ({ navigation }) => {
                   <View style={{ flexDirection: 'row' }}>
                     <View style={{ height: 50, width: 50, backgroundColor: 'aliceblue' }} />
                     <View>
-                      <Text>
-                        {item.author.first_name + '    ' + item.author.last_name}
-                        {item.timestamp}
-                      </Text>
                     </View>
                   </View>
                   <Text>
@@ -175,6 +217,7 @@ const HomeScreen = ({ navigation }) => {
             );
           }}
         />
+        )}
         <Button
           title="makePost"
           onPress={() => {
