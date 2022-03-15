@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-elements';
 import TestIPAddress from '../TestIPAddress';
@@ -88,7 +88,8 @@ const SearchScreen = ({ navigation }) => {
   });
 
   return (
-    <View>
+    <View style = {{ flex: 1}}>
+      <ScrollView>
       <TextInput placeholder="Search..." onChangeText={(text) => setSearchField(text)} />
       <Button
         title="Search"
@@ -131,6 +132,7 @@ const SearchScreen = ({ navigation }) => {
         }}
       />
       <View style={{ flexDirection: 'row' }} />
+      </ScrollView>
     </View>
   );
 };

@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button, FlatList, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-elements';
-import AuthContext from '../AuthContext';
 import TestIPAddress from '../TestIPAddress';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const HomeScreen = ({ navigation }) => {
   const [token, setToken] = useState(null);
   const [id, setID] = useState(null);
-  const [isSignedIn, setIsSignedIn] = useState(true);
   const [isLoadedingPosts, setIsLoadedingPosts] = useState(false);
   const [isloadingPhotos, setIsLoadingPhotos] = useState(false);
-  const { signOut } = React.useContext(AuthContext);
   const [posts, setPosts] = useState(null);
   const [photo, setPhoto] = useState(null);
   const getToken = async () => {
@@ -106,9 +104,7 @@ const HomeScreen = ({ navigation }) => {
       });
   };
 
-  if (!isSignedIn) {
-    signOut({});
-  }
+  
   const updatePosts = async () => {
     try {
       const tempToken = await getToken();
@@ -128,13 +124,13 @@ const HomeScreen = ({ navigation }) => {
     if (posts === null && isLoadedingPosts === false) {
       setIsLoadedingPosts(true);
       updatePosts();
-
     }
     console.log("This should be called once and only once")
   }, []);
 
   return (
-    <View>
+    <View style={{ flex: 1}}>
+      <ScrollView>
       <Card>
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flexDirection: 'column' }}>
@@ -175,6 +171,8 @@ const HomeScreen = ({ navigation }) => {
                   <View style={{ flexDirection: 'row' }}>
                     <View style={{ height: 50, width: 50, backgroundColor: 'aliceblue' }} />
                     <View>
+                      <Text>{`${item.author.first_name}    ${item.author.last_name}`}</Text>
+                      <Text>{new Date(item.timestamp).toISOString() }</Text>
                     </View>
                   </View>
                   <Text>
@@ -202,6 +200,7 @@ const HomeScreen = ({ navigation }) => {
           }}
         />
       </View>
+      </ScrollView>
     </View>
   );
 };
