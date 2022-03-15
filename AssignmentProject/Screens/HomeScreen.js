@@ -117,6 +117,7 @@ const HomeScreen = ({ navigation }) => {
       updatePosts();
       setIsLoadeding(true);
     }
+    console.log(id)
   });
 
   return (

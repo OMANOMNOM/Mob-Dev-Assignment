@@ -18,6 +18,9 @@ import PhotoScreen from './Screens/PhotoScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+// using Hooks rather than classes was a pretty poor decision by my part. Should of
+// listened to everyone else XD
+
 function HomePages( { navigation }) {
   return (
     <Tab.Navigator>

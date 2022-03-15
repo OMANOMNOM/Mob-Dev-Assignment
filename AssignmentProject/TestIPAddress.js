@@ -1,5 +1,5 @@
 class TestIPAddress {
-  static address = '192.168.1.76';
+  static address = '172.31.183.51';
 
   static port = '3333';
 
