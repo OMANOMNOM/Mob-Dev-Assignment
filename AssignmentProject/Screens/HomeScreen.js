@@ -129,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={{ flex: 1}}>
+    <View style={{ flex: 1 }}>
       <ScrollView>
       <Card>
         <View style={{ flexDirection: 'row' }}>
@@ -141,7 +141,7 @@ const HomeScreen = ({ navigation }) => {
               style={{
                 width: 400,
                 height: 400,
-                borderWidth: 5
+                borderWidth: 5,
               }}
             />
             <Button title="Change profile picture" onPress={() => { navigation.navigate('PhotoScreen'); }} />
@@ -196,7 +196,10 @@ const HomeScreen = ({ navigation }) => {
         <Button
           title="makePost"
           onPress={() => {
-            navigation.navigate('New Post');
+            navigation.navigate('New Post', {
+              isUpdating: false,
+            });
+            
           }}
         />
       </View>

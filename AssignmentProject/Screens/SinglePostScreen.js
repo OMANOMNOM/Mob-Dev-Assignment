@@ -131,7 +131,11 @@ const SinglePostScreen = ({ route, navigation }) => {
                   <Button
                     title="Edit"
                     onPress={() => {
-                      editPost();
+                      navigation.navigate('New Post', {
+                        userId: userid,
+                        isUpdating: true,
+                        postId: postId
+                      });
                     }}
                   />
 

@@ -8,7 +8,9 @@ const NewPostScreen = ({ route, navigation }) => {
   const [users, setUsers] = useState([]);
   const [id, setID] = useState('');
   const [postText, setText] = useState('');
-
+  const [isUpdating, setIsUpdating] = useState(null);
+  const [postId, setPostId] = useState(null);
+  const [postInfo, setPostInfo] = useState(null);
   const getToken = async () => {
     try {
       const value = await AsyncStorage.getItem('token');
@@ -38,7 +40,7 @@ const NewPostScreen = ({ route, navigation }) => {
   const addPost = () => {
     var t = postText;
     console.log(id)
-    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/'+ id +'/post', {
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + id + '/post', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -58,36 +60,126 @@ const NewPostScreen = ({ route, navigation }) => {
       });
   };
 
+  const updatePost = () => {
+    let temp = postInfo;
+    temp.text = postText; 
+    setPostInfo(temp);
+    console.log(id)
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + id + '/post/' + postInfo.post_id, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token,
+      },
+      body: JSON.stringify(
+        temp
+      ),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Friend request succesfully sent');
+        }
+      })
+      .catch((error) => {
+        console.log('Friend request already been sent');
+      });
+  };
+
   useEffect(() => {
-    getToken();
     if (route.params != null) {
-      console.log(route.params.userId);
       setID(route.params.userId);
+      if (route.params.isUpdating != null) {
+        setIsUpdating(route.params.isUpdating);
+        setPostId(route.params.postId);
+        console.log("The value of isupdaing shlud be true")
+        console.log(route.params.isUpdating)
+      }
+      getToken();
     } else {
-      getID();
+      //getID();
+      //Don't think we need this code tbh
     }
-  });
+
+  }, []);
+
+  useEffect(() => {
+
+    if (token === '') {
+      return;
+    }
+    console.log(`${isUpdating} value of is updatinh`);
+    const getPost = async () => {
+      return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + route.params.userId + '/post/' + route.params.postId, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Authorization': token,
+        },
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          if (responseJson !== null) {
+            console.log(responseJson)
+            console.log(responseJson.text)
+            setText(responseJson.text)
+            setPostInfo(responseJson)
+
+          } else {
+            console.log('Not returned what we want');
+          }
+        })
+        .catch((error) => {
+          console.log('Cant get post ');
+        });
+    };
+    getPost();
+  }, [token]);
 
   return (
     <View>
-      <Text>Make a new post</Text>
-      <View>
-        <TextInput
-          multiline
-          numberOfLines={8}
-          defaultValue="Enter your post here!"
-          onChangeText={(text) => {
-            setText(text);
-            console.log(text);
-          }}
-        />
-      </View>
-      <Button
-        title="Post"
-        onPress={() => {
-          addPost();
-        }}
-      />
+      {isUpdating !== true ? (
+        <>
+          <Text>Make a new post</Text>
+          <View>
+            <TextInput
+              multiline
+              numberOfLines={8}
+              defaultValue="Enter your post here!"
+              onChangeText={(text) => {
+                setText(text);
+                console.log(text);
+              }}
+            />
+          </View>
+          <Button
+            title="Post"
+            onPress={() => {
+              addPost();
+            }}
+          />
+        </>
+      ) : (
+        <>
+          <Text>Update a post</Text>
+          <View>
+            <TextInput
+              multiline
+              value={postText}
+              numberOfLines={8}
+              onChangeText={(text) => {
+                setText(text);
+                console.log(text);
+              }}
+            />
+          </View>
+          <Button
+            title="Update Post"
+            onPress={() => {
+              updatePost();
+            }}
+          />
+        </>
+      )}
     </View>
   );
 };

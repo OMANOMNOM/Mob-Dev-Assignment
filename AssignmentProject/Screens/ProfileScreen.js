@@ -115,7 +115,8 @@ const ProfileScreen = ({ route, navigation }) => {
           title="makePost"
           onPress={() => {
             navigation.navigate('New Post', {
-              userId: user_id
+              userId: user_id,
+              isUpdating: false,
             });
           }}
         />
