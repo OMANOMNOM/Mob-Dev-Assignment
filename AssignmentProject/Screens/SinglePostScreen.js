@@ -8,9 +8,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const SinglePostScreen = ({ route, navigation }) => {
   const [token, setToken] = useState('');
   const [userid, setUserID] = useState('');
+  const [authorId, setAuthorId] = useState('');
   const [postId, setPostId] = useState('');
   const [postText, setText] = useState('');
   const [postLikes, setPostLikes] = useState('');
+  const [isChanged, setIsChanging] = useState(false);
   const [isPostOwner, setIsPostOwner] = useState(false);
   const [postInfo, setPostInfo] = useState(null);
   const getToken = async () => {
@@ -27,17 +29,41 @@ const SinglePostScreen = ({ route, navigation }) => {
   };
 
 
-  const likePost = () => {
-    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + userid + '/post/' + postId + '/like', {
+  const likePost = async () => {
+    let ptoken = await getToken();
+
+    console.log(TestIPAddress.createAddress() + '/api/1.0.0/user/' + route.params.userId + '/post/' + postId + '/like')
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + route.params.userId + '/post/' + postId + '/like', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Authorization': token,
+        'X-Authorization': ptoken,
       },
     })
       .then((response) => {
         if (response.ok) {
           console.log('we have succesfully like this post');
+          setIsChanging(true);
+        }
+      })
+      .catch((error) => {
+        console.log('Friend request already been sent');
+      });
+  };
+
+  const disLikePost = async () => {
+    let ptoken = await getToken();
+    return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + route.params.userId + '/post/' + postId + '/like', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': ptoken,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('we have succesfully like this post');
+          setIsChanging(true);
         }
       })
       .catch((error) => {
@@ -77,6 +103,7 @@ const SinglePostScreen = ({ route, navigation }) => {
     // Don't use states here because they won't be updated in time.
     const getPost = async () => {
       let ptoken = await getToken();
+      console.log(TestIPAddress.createAddress() + '/api/1.0.0/user/' + route.params.userId + '/post/' + route.params.postId)
       return fetch(TestIPAddress.createAddress() + '/api/1.0.0/user/' + route.params.userId + '/post/' + route.params.postId, {
         method: 'GET',
         headers: {
@@ -90,7 +117,13 @@ const SinglePostScreen = ({ route, navigation }) => {
             if (responseJson.author.user_id == route.params.userId) {
               setIsPostOwner(true);
             }
+            setAuthorId(responseJson.author.user_id)
             setPostInfo(responseJson)
+            if(isChanged===true){
+              setIsChanging(false)
+            }
+            console.log(responseJson)
+            console.log(reque)
           } else {
             console.log('Error signing in');
           }
@@ -100,7 +133,7 @@ const SinglePostScreen = ({ route, navigation }) => {
         });
     };
     getPost();
-  }, []);
+  }, [isChanged]);
 
   return (
     <View>
@@ -126,6 +159,12 @@ const SinglePostScreen = ({ route, navigation }) => {
                 }}
               />
               <Text> {postInfo.numLikes}</Text>
+              <Button
+                title="DisLike"
+                onPress={() => {
+                  disLikePost();
+                }}
+              />
               {isPostOwner &&
                 (<>
                   <Button
