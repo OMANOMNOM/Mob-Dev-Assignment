@@ -15,7 +15,6 @@ import ProfileScreen from './Screens/ProfileScreen';
 import NewPostScreen from './Screens/NewPostScreen';
 import SinglePostScreen from './Screens/SinglePostScreen';
 import PhotoScreen from './Screens/PhotoScreen';
-import UpdatePostScreen from './Screens/UpdatePostScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -133,7 +132,6 @@ export default function App() {
               <Stack.Screen name="New Post" component={NewPostScreen} />
               <Stack.Screen name="Single Post" component={SinglePostScreen} />
               <Stack.Screen name="PhotoScreen" component={PhotoScreen} />
-              <Stack.Screen name="Update Post" component={UpdatePostScreen} />
 
             </>
           </Stack.Navigator>
