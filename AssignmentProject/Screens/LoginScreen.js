@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card, Button } from 'react-native-elements';
+import validator from 'validator';
 import AuthContext from '../AuthContext';
-import TestIPAddress from '../TestIPAddress';
+import TestIPAddress from '../Utility/TestIPAddress.js';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -23,10 +24,24 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const ValidateCredentials = () => {
-    // Preform basic type validation
-    if (true) {
-      setIsValid(true);
+    // 1. Make them strings
+    const tempPassword = password + '';
+    const tempEmail = email + '';
+
+    // 2. Check both aren't empty whitespace
+    if (validator.isEmpty(tempPassword, { ignore_whitespace: true })
+      || validator.isEmpty(tempEmail, { ignore_whitespace: true })) {
+      console.log('Please enter a password or email');
+      return;
     }
+
+    // 3. Check email validation (using default settings)
+    if (!validator.isEmail(tempEmail)) {
+      console.log('Please enter a valid email');
+      return;
+    }
+
+    setIsValid(true);
   };
 
   useEffect(() => {
@@ -82,7 +97,7 @@ const LoginScreen = ({ navigation }) => {
   }
 
   // TODO: maxLength currently 50 for both em,pwsd.
-  // Don't really see anypoint to using the <form> tags.
+  // Don't really see anypoint to using the <form> tags tbh.
   return (
     <View>
       {isLoading === true ? (
@@ -91,7 +106,7 @@ const LoginScreen = ({ navigation }) => {
         <>
           <Card>
             <TextInput placeholder="Email" autoCapitalize="none" maxLength={50} onChangeText={(text) => setEmail(text)} />
-            <TextInput placeholder="Password" autoCapitalize="none" secureTextEntry="true" maxLength={50} onChangeText={(text) => setPassword(text)} />
+            <TextInput placeholder="Password" autoCapitalize="none" secureTextEntry maxLength={50} onChangeText={(text) => setPassword(text)} />
             <Button
               title="Sign in"
               onPress={() => {

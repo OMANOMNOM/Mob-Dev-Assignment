@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { Camera } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import TestIPAddress from '../TestIPAddress';
+import TestIPAddress from '../Utility/TestIPAddress';
 
 const PhotoScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);

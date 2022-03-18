@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-elements';
-import TestIPAddress from '../TestIPAddress';
+import TestIPAddress from '../Utility/TestIPAddress';
 
 const SearchScreen = ({ navigation }) => {
   const [token, setToken] = useState('');

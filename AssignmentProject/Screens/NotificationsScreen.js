@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import TestIPAddress from '../TestIPAddress';
+import TestIPAddress from '../Utility/TestIPAddress';
 
 const NotificationsScreen = () => {
   const [token, setToken] = useState('');

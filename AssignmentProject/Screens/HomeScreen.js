@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button, FlatList, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-elements';
-import TestIPAddress from '../TestIPAddress';
+import TestIPAddress from '../Utility/TestIPAddress.js';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const HomeScreen = ({ navigation }) => {
@@ -12,6 +12,7 @@ const HomeScreen = ({ navigation }) => {
   const [isloadingPhotos, setIsLoadingPhotos] = useState(false);
   const [posts, setPosts] = useState(null);
   const [photo, setPhoto] = useState(null);
+  const [photoString, setPhotoString] = useState(null);
   const getToken = async () => {
     try {
       const value = await AsyncStorage.getItem('token');
@@ -62,6 +63,7 @@ const HomeScreen = ({ navigation }) => {
       .then((resBlob) => {
         let data = URL.createObjectURL(resBlob);
         setPhoto(data);
+        console.log(data);
       })
       .catch((err) => {
         console.log("error", err)
@@ -104,7 +106,6 @@ const HomeScreen = ({ navigation }) => {
       });
   };
 
-  
   const updatePosts = async () => {
     try {
       const tempToken = await getToken();
@@ -130,23 +131,22 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView>
       <Card>
         <View style={{ flexDirection: 'row' }}>
-          <View style={{ flexDirection: 'column' }}>
+          <View style={{ flexDirection: 'column', flex: 1 }}>
             <Image
               source={{
                 uri: photo,
               }}
               style={{
-                width: 400,
-                height: 400,
+                width: 640,
+                height: 480,
                 borderWidth: 5,
               }}
             />
             <Button title="Change profile picture" onPress={() => { navigation.navigate('PhotoScreen'); }} />
           </View>
-          <View>
+          <View style={{ flexDirection: 'column', flex: 1 }}>
             <Text>User details</Text>
             <Text>User details</Text>
             <Button
@@ -159,12 +159,12 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
       </Card>
-      <View>
+      <Card>
         <Text>Post</Text>
         {posts && (
         <FlatList
           data={posts}
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             return (
               <Card>
                 <View>
@@ -191,6 +191,8 @@ const HomeScreen = ({ navigation }) => {
               </Card>
             );
           }}
+          keyExtractor={(item, index) => index.toString()}
+
         />
         )}
         <Button
@@ -199,11 +201,9 @@ const HomeScreen = ({ navigation }) => {
             navigation.navigate('New Post', {
               isUpdating: false,
             });
-            
           }}
         />
-      </View>
-      </ScrollView>
+      </Card>
     </View>
   );
 };

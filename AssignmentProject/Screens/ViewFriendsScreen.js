@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button } from 'react-native';
-import TestIPAddress from '../TestIPAddress';
+import TestIPAddress from '../Utility/TestIPAddress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card} from 'react-native-elements';
 
